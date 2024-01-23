@@ -17,13 +17,14 @@ EVO_AUD_DOMAIN="n6.roundfinity.com"
 ```
 
 Each currency has it's own websocket server (on each own port, make sure the nginx setup you change the websocket port accordingly), check the `/websocket` folder.
+Run each currency websocket server persistant like following: `pm2 start server.js --name n1`
 
-Currently is setup to change "TRY" currency, this can be changed accordingly within the websocket.
-
-You can set the origin Evolution server in `config/evolution.php`, which should match the server you feed.
+You can set the origin Evolution server in `config/evolution.php`, which should match the original evolution server you feed to the convertUrl.
 
 ## Usage
-You feed any Evolution URL to API route `/api/convertUrl`, for example: `http://localhost/api/convertUrl?currency=USD&url=https://originalsessionurl.evo-games.com``
+You feed any Evolution URL to API route `/api/convertUrl`, for example: 
+`http://localhost/api/convertUrl?currency=USD&url=https://originalsessionurl.evo-games.com`
+
 
 ## Nginx Example
 ```bash
@@ -76,9 +77,4 @@ sudo find . -type d -exec chmod 775 {} \;
 sudo find . -type d -exec chmod g+s {} \;
 sudo chgrp -R www-data storage bootstrap/cache
 sudo chmod -R ug+rwx storage bootstrap/cache
-```
-
-### Websocket Persist Command
-```bash
-pm2 start server.js --name n1
 ```
