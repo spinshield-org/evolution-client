@@ -21,6 +21,31 @@ Run each currency websocket server persistant like following: `pm2 start server.
 
 You can set the origin Evolution server in `config/evolution.php`, which should match the original evolution server you feed to the convertUrl.
 
+## release powered by ones fucking me on industry
+- zzvitamins
+- george pricup
+- stanislav (free stanislav & nelson mandela)
+- matteo di matteo
+- rj (playtech dev head)
+- topgame
+- 1xbet
+- david wainwright
+- armenia
+- marcello
+- mladen (stake.com)
+- laurence (bets.io, mexico chicken guy)
+- vladimir (vladcasino)
+- ivan montik (softswiss poland power)
+- slava (winz.io free socks)
+- tiernan malone (grosvenor)
+
+## copied methods used from:
+- 1x2network
+- 1gamehub
+- nyx
+- relaxgaming (check rgs communicator)
+- bridge general methods
+- 
 ## Usage
 You feed any Evolution URL to API route `/api/convertUrl`, for example: 
 `http://localhost/api/convertUrl?currency=USD&url=https://originalsessionurl.evo-games.com`
