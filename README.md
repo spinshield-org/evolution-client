@@ -8,12 +8,12 @@ Run `cp .env.example .env` and fill in all variables, for each currency you will
 
 Enter to .env example:
 ```bash
-EVO_USD_DOMAIN="n1.roundfinity.com"
-EVO_EUR_DOMAIN="n2.roundfinity.com"
-EVO_GBP_DOMAIN="n3.roundfinity.com"
-EVO_CAD_DOMAIN="n4.roundfinity.com"
-EVO_NZD_DOMAIN="n5.roundfinity.com"
-EVO_AUD_DOMAIN="n6.roundfinity.com"
+EVO_USD_DOMAIN="n1.yoursite.com"
+EVO_EUR_DOMAIN="n2.yoursite.com"
+EVO_GBP_DOMAIN="n3.yoursite.com"
+EVO_CAD_DOMAIN="n4.yoursite.com"
+EVO_NZD_DOMAIN="n5.yoursite.com"
+EVO_AUD_DOMAIN="n6.yoursite.com"
 ```
 
 Each currency has it's own websocket server (on each own port, make sure the nginx setup you change the websocket port accordingly), check the `/websocket` folder.
@@ -21,31 +21,9 @@ Run each currency websocket server persistant like following: `pm2 start server.
 
 You can set the origin Evolution server in `config/evolution.php`, which should match the original evolution server you feed to the convertUrl.
 
-## release powered by ones fucking me on industry
-- zzvitamins
-- george pricup
-- stanislav (free stanislav & nelson mandela)
-- matteo di matteo
-- rj (playtech dev head)
-- topgame
-- 1xbet
-- david wainwright
-- armenia
-- marcello
-- mladen (stake.com)
-- laurence (bets.io, mexico chicken guy)
-- vladimir (vladcasino)
-- ivan montik (softswiss poland power)
-- slava (winz.io free socks)
-- tiernan malone (grosvenor)
+## Contact
+https://t.me/wrccwest
 
-## copied methods used from:
-- 1x2network
-- 1gamehub
-- nyx
-- relaxgaming (check rgs communicator)
-- bridge general methods
-- 
 ## Usage
 You feed any Evolution URL to API route `/api/convertUrl`, for example: 
 `http://localhost/api/convertUrl?currency=USD&url=https://originalsessionurl.evo-games.com`
@@ -59,15 +37,15 @@ server {
     access_log /dev/null;
     error_log /dev/null;
 
-    ssl_certificate /etc/letsencrypt/live/n1.roundfinity.com/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/n1.roundfinity.com/privkey.pem;
-    server_name n1.roundfinity.com;
+    ssl_certificate /etc/letsencrypt/live/n1.yoursite.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/n1.yoursite.com/privkey.pem;
+    server_name n1.yoursite.com;
     charset utf-8;
     index index.php;
     root /var/www/evolution/public/;
 
   location / {
-      add_header 'Access-Control-Allow-Origin' 'https://n1.roundfinity.com' always;
+      add_header 'Access-Control-Allow-Origin' 'https://n1.yoursite.com' always;
       add_header 'Access-Control-Allow-Credentials' 'true' always;
       add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS' always;
       add_header 'Access-Control-Allow-Headers' 'DNT,User-Agent,X-Requested-With,If-Modified-Since,Content-Type,Range' always;
