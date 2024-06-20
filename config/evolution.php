@@ -1,8 +1,8 @@
 <?php
 
 return [
-  "base_domain" => "wac.evo-games.com",
-  "base_slots_domain" => "tmobslot.evo-games.com",
+  "base_domain" => "dpg.evo-games.com",
+  "base_slots_domain" => "dpg.evo-games.com",
   "domains" => [
     "USD" => str_replace("https://", "", env('EVO_USD_DOMAIN', env("APP_URL"), null)),
     "EUR" => str_replace("https://", "", env('EVO_EUR_DOMAIN', env("APP_URL"), null)),

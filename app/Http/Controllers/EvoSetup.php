@@ -23,6 +23,8 @@ class EvoSetup extends Controller
     $setup = $this->setupRequest($request);
     $setup = json_decode($setup->getContent(), true);
     //setup['currencyCode'] = "USD";
+    $setup['casino_id'] = "wildwestgaming0";
+
     $setup['currencySymbol'] = "$";
     return $setup;
   }
@@ -31,6 +33,7 @@ class EvoSetup extends Controller
     $setup = $this->setupRequest($request);
     $setup = json_decode($setup->getContent(), true);
     //$setup['currencyCode'] = "EUR";
+    $setup['casino_id'] = "wildwestgaming0";
     $setup['currencySymbol'] = "€";
     return $setup;
   }
@@ -39,6 +42,7 @@ class EvoSetup extends Controller
     $setup = $this->setupRequest($request);
     $setup = json_decode($setup->getContent(), true);
     //$setup['currencyCode'] = "GBP";
+    $setup['casino_id'] = "wildwestgaming0";
     $setup['currencySymbol'] = "£";
     return $setup;
   }
@@ -47,6 +51,7 @@ class EvoSetup extends Controller
     $setup = $this->setupRequest($request);
     $setup = json_decode($setup->getContent(), true);
     //$setup['currencyCode'] = "CAD";
+    $setup['casino_id'] = "wildwestgaming0";
     $setup['currencySymbol'] = "$";
     return $setup;
   }
@@ -55,6 +60,7 @@ class EvoSetup extends Controller
     $setup = $this->setupRequest($request);
     $setup = json_decode($setup->getContent(), true);
     //$setup['currencyCode'] = "NZD";
+    $setup['casino_id'] = "wildwestgaming0";
     $setup['currencySymbol'] = "$";
     return $setup;
   }
@@ -63,6 +69,7 @@ class EvoSetup extends Controller
     $setup = $this->setupRequest($request);
     $setup = json_decode($setup->getContent(), true);
     //$setup['currencyCode'] = "AUD";
+    $setup['casino_id'] = "wildwestgaming0";
     $setup['currencySymbol'] = "$";
     return $setup;
   }

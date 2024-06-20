@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\EvoStyle;
 use App\Http\Controllers\EvoSetup;
 use App\Http\Controllers\EvoConfig;
+use App\Http\Controllers\EvoHistory;
 
 
 Route::get('/', function () {
@@ -47,22 +48,30 @@ Route::middleware('api')->domain((config("evolution.domains.AUD")))->get('/confi
 
 Route::middleware('api')->get('/style', [EvoStyle::class, 'style'])->name('evolution.client.style');
 
+
+Route::middleware('api')->domain((config("evolution.domains.USD")))->get('/api/player/history/day/{day}', [EvoHistory::class, 'usd'])->name('evolution.client.history.usd');
+Route::middleware('api')->domain((config("evolution.domains.EUR")))->get('/api/player/history/day/{day}', [EvoHistory::class, 'eur'])->name('evolution.client.history.eur');
+Route::middleware('api')->domain((config("evolution.domains.GBP")))->get('/api/player/history/day/{day}', [EvoHistory::class, 'gbp'])->name('evolution.client.history.gbp');
+Route::middleware('api')->domain((config("evolution.domains.CAD")))->get('/api/player/history/day/{day}', [EvoHistory::class, 'cad'])->name('evolution.client.history.cad');
+Route::middleware('api')->domain((config("evolution.domains.NZD")))->get('/api/player/history/day/{day}', [EvoHistory::class, 'nzd'])->name('evolution.client.history.nzd');
+Route::middleware('api')->domain((config("evolution.domains.AUD")))->get('/api/player/history/day/{day}', [EvoHistory::class, 'aud'])->name('evolution.client.history.aud');
+
 Route::middleware('api')->get('/frontend/loc/strings/{lang}/{file}', function(Request $request, $lang, $file) {
-    $url = 'https://wac.evo-games.com/frontend/loc/strings/'.$lang.'/'.$file;
+    $url = 'https://'.config("evolution.base_domain").'/frontend/loc/strings/'.$lang.'/'.$file;
     $file = ProxyHelperFacade::CreateProxy($request)->toUrl($url);
     return response($file)
     ->header('Content-Type', 'application/json');
 });
 
 Route::middleware('api')->get('/frontend/evo/r2/images/{file}', function(Request $request, $file) {
-    $url = 'https://wac.evo-games.com/frontend/evo/r2/images/'.$file;
+    $url = 'https://'.config("evolution.base_domain").'/frontend/evo/r2/images/'.$file;
     $file = ProxyHelperFacade::CreateProxy($request)->toUrl($url);
     return response($file)
     ->header('Content-Type', 'image/webp');
 });
 
 Route::middleware('api')->get('/frontend/evo/r2/js/{file}', function(Request $request, $file) {
-    $url = 'https://wac.evo-games.com/frontend/evo/r2/js/'.$file;
+    $url = 'https://'.config("evolution.base_domain").'/frontend/evo/r2/js/'.$file;
     $file = ProxyHelperFacade::CreateProxy($request)->toUrl($url);
     return response($file)
     ->header('Content-Type', 'application/javascript');
@@ -76,15 +85,24 @@ Route::middleware('api')->get('/frontend/cvi/evo-video-components/{file}', funct
 });
 
 
+Route::middleware('api')->get('/api/player/history/days', function(Request $request) {
+    $url = 'https://'.config("evolution.base_domain").'/api/player/history/days';
+    $response = ProxyHelperFacade::CreateProxy($request)->toUrl($url);
+    return $response;
+});
+
+
+
+
 Route::middleware('api')->get('/api/player/screenName', function(Request $request) {
-    $url = 'https://wac.evo-games.com/api/player/screenName';
+    $url = 'https://'.config("evolution.base_domain").'/api/player/screenName';
     $response = ProxyHelperFacade::CreateProxy($request)->toUrl($url);
     return $response;
 });
 
 Route::middleware('api')->put('/api/player/screenName', function(Request $request) {
     $sessionid = $request->EVOSESSIONID;
-    $url = 'https://wac.evo-games.com/api/player/screenName?EVOSESSIONID='.$sessionid.'&'.request()->getQueryString();
+    $url = 'https://'.config("evolution.base_domain").'/api/player/screenName?EVOSESSIONID='.$sessionid.'&'.request()->getQueryString();
     $response = Http::withHeaders([
        "Accept" => "*/*",
        "Accept-Encoding" => "gzip, deflate, br",
@@ -105,13 +123,8 @@ Route::middleware('api')->put('/api/player/screenName', function(Request $reques
 });
 
 
-
-
-
-
-
 Route::middleware('api')->get('/frontend/evo/r2/styles/{file}', function(Request $request, $file) {
-    $url = 'https://wac.evo-games.com/frontend/evo/r2/styles/'.$file;
+    $url = 'https://'.config("evolution.base_domain").'/frontend/evo/r2/styles/'.$file;
     $file = ProxyHelperFacade::CreateProxy($request)->toUrl($url);
     return response($file)
      ->header('Content-Type', 'text/css');

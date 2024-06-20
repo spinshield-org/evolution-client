@@ -1,5 +1,26 @@
 	console.clear();
 	// Vars
+	const getArgs = () =>
+		process.argv.reduce((args, arg) => {
+			// long arg
+			if (arg.slice(0, 2) === "--") {
+				const longArg = arg.split("=");
+				const longArgFlag = longArg[0].slice(2);
+				const longArgValue = longArg.length > 1 ? longArg[1] : true;
+				args[longArgFlag] = longArgValue;
+			}
+			// flags
+			else if (arg[0] === "-") {
+				const flags = arg.slice(1).split("");
+				flags.forEach((flag) => {
+					args[flag] = true;
+				});
+			}
+			return args;
+		}, {});
+
+	const args = getArgs();
+
 	const sessions = require('./helpers/sessions'),
 		  enquiryClient = require('./helpers/enquiryClient'),
 		  enquiryServer = require('./helpers/enquiryServer'),
@@ -7,9 +28,10 @@
 		  {r, g, b, w, c, m, y, k} = require('./helpers/consoleColors');
 	var WebSocketServer = require('ws').Server,
 		WebSocketClient = require('ws'),
-		socketServer = new WebSocketServer({ port: 8081 }),
-		base = 'wss://wac.evo-games.com';
-
+		socketServer = new WebSocketServer({ port: args.port }),
+		base = 'wss://dpg.evo-games.com';
+	console.log("Started server on " + args.port);
+	
 	// Local WebSocket server
 	socketServer.on('connection', (socketServerConnection, req) => {
 	  var id = sessions.uuid();

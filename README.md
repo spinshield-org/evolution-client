@@ -17,7 +17,7 @@ EVO_AUD_DOMAIN="n6.yoursite.com"
 ```
 
 Each currency has it's own websocket server (on each own port, make sure the nginx setup you change the websocket port accordingly), check the `/websocket` folder.
-Run each currency websocket server persistant like following: `pm2 start server.js --name n1`
+Run each currency websocket server persistant like following: `pm2 start server.js --name=n1-5 -- --port=8015"
 
 You can set the origin Evolution server in `config/evolution.php`, which should match the original evolution server you feed to the convertUrl.
 
@@ -71,10 +71,60 @@ server {
 }
 ```
 
+## multi websocket nginx Exmaple
+```
+upstream websocket1 {
+  ip_hash;
+  server localhost:8011;
+  server localhost:8012;
+  server localhost:8013;
+  server localhost:8014;
+  server localhost:8015;
+}
+server {
+    listen 443 ssl;
+    listen 80;
+    access_log /dev/null;
+    error_log /dev/null;
+
+    ssl_certificate /etc/letsencrypt/live/dgp1.evo-games.eu/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/dgp1.evo-games.eu/privkey.pem;
+    server_name dgp1.evo-games.eu;
+    charset utf-8;
+    index index.php;
+    root /var/www/evolution-client-master/public/;
+
+  location / {
+      add_header 'Access-Control-Allow-Origin' 'https://evo-games.eu' always;
+      add_header 'Access-Control-Allow-Credentials' 'true' always;
+      add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS' always;
+      add_header 'Access-Control-Allow-Headers' 'DNT,User-Agent,X-Requested-With,If-Modified-Since,Content-Type,Range' always;
+      add_header 'Access-Control-Expose-Headers' 'Content-Length,Content-Range' always;
+      try_files $uri $uri/ /index.php$is_args$args;
+    }
+
+    # Websocket Reverse Proxy
+    location /public/ {
+       proxy_pass http://websocket1;
+       proxy_http_version 1.1;
+       proxy_set_header Upgrade $http_upgrade;
+       proxy_set_header Connection "Upgrade";
+       proxy_set_header Host $host;
+    }
+
+    location ~ \.php$ {
+            fastcgi_split_path_info ^(.+\.php)(/.+)$;
+            fastcgi_pass unix:/run/php/php8.3-fpm.sock;
+            #fascgi_index index.php;
+            include fastcgi.conf;
+    }
+}
+```
+
 ## Helpers
 ### Permission Helper
 ```bash
-sudo chown -R www-data:www-data .
+sudo chown -R $USER:www-data .
 sudo find . -type f -exec chmod 664 {} \;
 sudo find . -type d -exec chmod 775 {} \;
 sudo find . -type d -exec chmod g+s {} \;

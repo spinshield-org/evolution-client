@@ -68,7 +68,7 @@ const ForgeryMsgClient = function(msg, type, userSession) {
 	}
 	
 	let data = JSON.stringify(msg);
-	let newdata = data.replace(/₺/gi, '£');
+	let newdata = data.replace(/R$/gi, '£');
 	response = JSON.parse(newdata);
 	
 	return JSON.stringify(response);

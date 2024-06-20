@@ -17,6 +17,26 @@ class EvoStyle extends Controller
   }
   
   public function style(Request $request) {
-    return ProxyHelperFacade::CreateProxy($request)->toUrl($this->evo_url_style);
+    $style = ProxyHelperFacade::CreateProxy($request)->toUrl($this->evo_url_style);
+    $style = json_decode($style->getContent(), true);
+    if(isset($style['cashier'])) {
+      unset($style['cashier']);
+    }
+    if(isset($style['licensee_lobby'])) {
+      unset($style['licensee_lobby']);
+    }
+    if(isset($style['mobile_settings'])) {
+      unset($style['mobile_settings']);
+    }
+    if(isset($style['responsible'])) {
+      unset($style['responsible']);
+    }
+    if(isset($style['sessionTimeout'])) {
+      unset($style['sessionTimeout']);
+    }
+
+    
+
+    return $style;
   }
 }
