@@ -16,60 +16,59 @@ class EvoSetup extends Controller
     $this->evo_url_setup = 'https://'.config("evolution.base_domain").'/setup';
   }
   public function setupRequest(Request $request) {
-    return ProxyHelperFacade::CreateProxy($request)->toUrl($this->evo_url_setup);
+    $setup = ProxyHelperFacade::CreateProxy($request)->toUrl($this->evo_url_setup);
+    $setup = json_decode($setup->getContent(), true);
+    $setup['casino_id'] = "wildwestgaming0";
+    if(isset($setup['screenNameChanges'])) {
+      if(isset($setup['screenNameChanges']['enabled'])) {
+        $setup['screenNameChanges']['enabled'] = false;
+      }
+    }
+    if(isset($setup['chat'])) {
+      if(isset($setup['chat']['serverHost'])) {
+        $setup['chat']['serverHost'] = "a8r.evo-games.com";
+      }
+    }
+    
+    return $setup;
   }
   
   public function usd(Request $request) {
     $setup = $this->setupRequest($request);
-    $setup = json_decode($setup->getContent(), true);
-    //setup['currencyCode'] = "USD";
-    $setup['casino_id'] = "wildwestgaming0";
-
     $setup['currencySymbol'] = "$";
     return $setup;
   }
     
   public function eur(Request $request) {
     $setup = $this->setupRequest($request);
-    $setup = json_decode($setup->getContent(), true);
-    //$setup['currencyCode'] = "EUR";
-    $setup['casino_id'] = "wildwestgaming0";
     $setup['currencySymbol'] = "€";
     return $setup;
   }
 
   public function gbp(Request $request) {
     $setup = $this->setupRequest($request);
-    $setup = json_decode($setup->getContent(), true);
     //$setup['currencyCode'] = "GBP";
-    $setup['casino_id'] = "wildwestgaming0";
     $setup['currencySymbol'] = "£";
     return $setup;
   }
     
   public function cad(Request $request) {
     $setup = $this->setupRequest($request);
-    $setup = json_decode($setup->getContent(), true);
     //$setup['currencyCode'] = "CAD";
-    $setup['casino_id'] = "wildwestgaming0";
     $setup['currencySymbol'] = "$";
     return $setup;
   }
       
   public function nzd(Request $request) {
     $setup = $this->setupRequest($request);
-    $setup = json_decode($setup->getContent(), true);
     //$setup['currencyCode'] = "NZD";
-    $setup['casino_id'] = "wildwestgaming0";
     $setup['currencySymbol'] = "$";
     return $setup;
   }
       
   public function aud(Request $request) {
     $setup = $this->setupRequest($request);
-    $setup = json_decode($setup->getContent(), true);
     //$setup['currencyCode'] = "AUD";
-    $setup['casino_id'] = "wildwestgaming0";
     $setup['currencySymbol'] = "$";
     return $setup;
   }

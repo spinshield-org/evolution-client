@@ -7,6 +7,7 @@ use App\Http\Controllers\EvoStyle;
 use App\Http\Controllers\EvoSetup;
 use App\Http\Controllers\EvoConfig;
 use App\Http\Controllers\EvoHistory;
+use App\Http\Controllers\EvoHelpers;
 
 
 Route::get('/', function () {
@@ -59,28 +60,35 @@ Route::middleware('api')->domain((config("evolution.domains.AUD")))->get('/api/p
 Route::middleware('api')->get('/frontend/loc/strings/{lang}/{file}', function(Request $request, $lang, $file) {
     $url = 'https://'.config("evolution.base_domain").'/frontend/loc/strings/'.$lang.'/'.$file;
     $file = ProxyHelperFacade::CreateProxy($request)->toUrl($url);
-    return response($file)
+    return response($file->getContent())
     ->header('Content-Type', 'application/json');
+});
+
+Route::middleware('api')->get('/cdn/app/43/amlst:dc3_ct_auto/manifest-ws2.json', function(Request $request, $file) {
+    $url = $request->url;
+    $file = ProxyHelperFacade::CreateProxy($request)->toUrl($url);
+    Log::debug($file->getContent());
+    return response($file->getContent());
 });
 
 Route::middleware('api')->get('/frontend/evo/r2/images/{file}', function(Request $request, $file) {
     $url = 'https://'.config("evolution.base_domain").'/frontend/evo/r2/images/'.$file;
     $file = ProxyHelperFacade::CreateProxy($request)->toUrl($url);
-    return response($file)
+    return response($file->getContent())
     ->header('Content-Type', 'image/webp');
 });
 
 Route::middleware('api')->get('/frontend/evo/r2/js/{file}', function(Request $request, $file) {
     $url = 'https://'.config("evolution.base_domain").'/frontend/evo/r2/js/'.$file;
     $file = ProxyHelperFacade::CreateProxy($request)->toUrl($url);
-    return response($file)
+    return response($file->getContent())
     ->header('Content-Type', 'application/javascript');
 });
 
 Route::middleware('api')->get('/frontend/cvi/evo-video-components/{file}', function(Request $request, $file) {
     $url = 'https://wac.evo-games.com/frontend/cvi/evo-video-components/'.$file;
     $file = ProxyHelperFacade::CreateProxy($request)->toUrl($url);
-    return response($file)
+    return response($file->getContent())
     ->header('Content-Type', 'application/javascript');
 });
 
@@ -91,36 +99,26 @@ Route::middleware('api')->get('/api/player/history/days', function(Request $requ
     return $response;
 });
 
-
-
-
-Route::middleware('api')->get('/api/player/screenName', function(Request $request) {
-    $url = 'https://'.config("evolution.base_domain").'/api/player/screenName';
+Route::middleware('api')->get('/api/player/history/game/{game}', function(Request $request, $game) {
+    $url = 'https://'.config("evolution.base_domain").'/api/player/history/game/'.$game;
     $response = ProxyHelperFacade::CreateProxy($request)->toUrl($url);
+    $response = json_decode($response->getContent(), true);
+    if(isset($response['participants'])) {
+        $i = 0;
+        foreach($response['participants'] as $participant) {
+            if(isset($participant['currencySymbol'])) {
+                $response['participants'][$i]['currencySymbol'] = "";
+            }
+            $i++;
+        }
+    }
     return $response;
 });
 
-Route::middleware('api')->put('/api/player/screenName', function(Request $request) {
-    $sessionid = $request->EVOSESSIONID;
-    $url = 'https://'.config("evolution.base_domain").'/api/player/screenName?EVOSESSIONID='.$sessionid.'&'.request()->getQueryString();
-    $response = Http::withHeaders([
-       "Accept" => "*/*",
-       "Accept-Encoding" => "gzip, deflate, br",
-       "Accept-Language" => "ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7",
-       "Connection" => "keep-alive",
-       "Content-Length" => "25",
-       "Content-Type" => "application/json",
-       "Cookie" => "EVOSESSIONID=".$sessionid."; cdn=https://static.egcdn.com; lang=en",
-       "Host" => "wac.evo-games.com",
-       "Origin" => "https://wac.evo-games.com",
-       "Referer" => "https://wac.evo-games.com/frontend/evo/r2/",
-       "Sec-Fetch-Dest" => "empty",
-       "Sec-Fetch-Mode" => "cors",
-       "Sec-Fetch-Site" => "same-origin",
-       "User-Agent" => "Mozilla/5.0 (iPhone; CPU iPhone OS 10_3_1 like Mac OS X) AppleWebKit/603.1.30 (KHTML, like Gecko) Version/10.0 Mobile/14E304 Safari/602.1",
-    ])->put($url, [ 'screenName' => $request->screenName ]);
-    return $response;
-});
+
+
+Route::middleware('api')->get('/api/player/screenName', [EvoHelpers::class, 'getScreenName'])->name('evolution.get.screenname');
+Route::middleware('api')->put('/api/player/screenName', [EvoHelpers::class, 'setScreenName'])->name('evolution.put.screenname');
 
 
 Route::middleware('api')->get('/frontend/evo/r2/styles/{file}', function(Request $request, $file) {

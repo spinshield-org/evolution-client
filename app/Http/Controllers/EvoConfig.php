@@ -16,12 +16,18 @@ class EvoConfig extends Controller
     $this->evo_url_config = 'https://'.config("evolution.base_domain").'/config';
   }
   public function configRequest(Request $request) {
-    return ProxyHelperFacade::CreateProxy($request)->toUrl($this->evo_url_config);
+    $response = ProxyHelperFacade::CreateProxy($request)->toUrl($this->evo_url_config);
+    $response = json_decode($response->getContent(), true);
+    //Log::debug($response);
+    //$response = str_replace("https://live1.egcvi.com", "https://dgb1.evo-games.eu/cdn/app/43/amlst:dc3_ct_auto/manifest-ws2.json?url=https://live1.egcvi.com", $response);
+    //$response['view1-mobile'] = "https://fra1-mdp-e03.egcvi.com/app/43/amlst:dc3_ct_auto/manifest-ws2.json?ac=aac&streamid=0&videoSessionId=sa5pe5dob43c4sr4-sa5pe5dob43c4sr4sbld545yzelerrima933267ee0dc02d7f56abdbf836d9321165152b3e23f5076-CrazyTime0000001-b92352&videoToken=eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkYzNfY3QiLCJleHAiOjE3MTk1MjExMDIsImlzcyI6IkwxeTZxcmVOTFMifQ.ryukiMwo6EffySKBrcgthQWOjnwQHNd6wqVPYmMfaEo&vc=h264";
+    //$response['view1-desktop'] = "https://fra1-mdp-e03.egcvi.com/app/43/amlst:dc3_ct_auto/manifest-ws2.json?ac=aac&streamid=0&videoSessionId=sa5pe5dob43c4sr4-sa5pe5dob43c4sr4sbld545yzelerrima933267ee0dc02d7f56abdbf836d9321165152b3e23f5076-CrazyTime0000001-b92352&videoToken=eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkYzNfY3QiLCJleHAiOjE3MTk1MjExMDIsImlzcyI6IkwxeTZxcmVOTFMifQ.ryukiMwo6EffySKBrcgthQWOjnwQHNd6wqVPYmMfaEo&vc=h264";
+
+    return $response;
   }
   
   public function usd(Request $request) {
     $config = $this->configRequest($request);
-    $config = json_decode($config->getContent(), true);
     //$config['currencyCode'] = "USD";
     $config['currencySymbol'] = "$";
     return $config;
@@ -29,7 +35,6 @@ class EvoConfig extends Controller
     
   public function eur(Request $request) {
     $config = $this->configRequest($request);
-    $config = json_decode($config->getContent(), true);
     //$config['currencyCode'] = "EUR";
     $config['currencySymbol'] = "€";
     return $config;
@@ -37,7 +42,6 @@ class EvoConfig extends Controller
 
   public function gbp(Request $request) {
     $config = $this->configRequest($request);
-    $config = json_decode($config->getContent(), true);
     //$config['currencyCode'] = "GBP";
     $config['currencySymbol'] = "£";
     return $config;
@@ -45,7 +49,6 @@ class EvoConfig extends Controller
     
   public function cad(Request $request) {
     $config = $this->configRequest($request);
-    $config = json_decode($config->getContent(), true);
     //$config['currencyCode'] = "CAD";
     $config['currencySymbol'] = "$";
     return $config;
@@ -53,7 +56,6 @@ class EvoConfig extends Controller
       
   public function nzd(Request $request) {
     $config = $this->configRequest($request);
-    $config = json_decode($config->getContent(), true);
     //$config['currencyCode'] = "NZD";
     $config['currencySymbol'] = "$";
     return $config;
@@ -61,7 +63,6 @@ class EvoConfig extends Controller
       
   public function aud(Request $request) {
     $config = $this->configRequest($request);
-    $config = json_decode($config->getContent(), true);
     //$config['currencyCode'] = "AUD";
     $config['currencySymbol'] = "$";
     return $config;
