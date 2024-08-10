@@ -8,6 +8,8 @@ use App\Http\Controllers\EvoSetup;
 use App\Http\Controllers\EvoConfig;
 use App\Http\Controllers\EvoHistory;
 use App\Http\Controllers\EvoHelpers;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Cache;
 
 
 Route::get('/', function () {
@@ -16,6 +18,26 @@ Route::get('/', function () {
 });
 
 Route::get('/frontend/evo/r2', function (Request $request) {
+    $cachedContent = Cache::get("evolution-content");
+    if($cachedContent) {
+        $data = [
+            "game_html" => $cachedContent,
+        ];
+
+        return view('evolution-embedded')->with('data', $data);
+    }
+    
+    return view('evolution');
+});
+Route::get('/frontend/onyx/ls', function (Request $request) {
+    $cachedContent = Cache::get("evolution-content");
+    if($cachedContent) {
+        $data = [
+            "game_html" => $cachedContent,
+        ];
+
+        return view('evolution-embedded')->with('data', $data);
+    }
     return view('evolution');
 });
 
@@ -39,6 +61,7 @@ Route::middleware('api')->domain((config("evolution.domains.GBP")))->get('/setup
 Route::middleware('api')->domain((config("evolution.domains.CAD")))->get('/setup', [EvoSetup::class, 'cad'])->name('evolution.client.setup.cad');
 Route::middleware('api')->domain((config("evolution.domains.NZD")))->get('/setup', [EvoSetup::class, 'nzd'])->name('evolution.client.setup.nzd');
 Route::middleware('api')->domain((config("evolution.domains.AUD")))->get('/setup', [EvoSetup::class, 'aud'])->name('evolution.client.setup.aud');
+Route::middleware('api')->domain((config("evolution.domains.BRL")))->get('/setup', [EvoSetup::class, 'brl'])->name('evolution.client.setup.brl');
 
 Route::middleware('api')->domain((config("evolution.domains.USD")))->get('/config', [EvoConfig::class, 'usd'])->name('evolution.client.config.usd');
 Route::middleware('api')->domain((config("evolution.domains.EUR")))->get('/config', [EvoConfig::class, 'eur'])->name('evolution.client.config.eur');
@@ -46,6 +69,7 @@ Route::middleware('api')->domain((config("evolution.domains.GBP")))->get('/confi
 Route::middleware('api')->domain((config("evolution.domains.CAD")))->get('/config', [EvoConfig::class, 'cad'])->name('evolution.client.config.cad');
 Route::middleware('api')->domain((config("evolution.domains.NZD")))->get('/config', [EvoConfig::class, 'nzd'])->name('evolution.client.config.nzd');
 Route::middleware('api')->domain((config("evolution.domains.AUD")))->get('/config', [EvoConfig::class, 'aud'])->name('evolution.client.config.aud');
+Route::middleware('api')->domain((config("evolution.domains.BRL")))->get('/config', [EvoConfig::class, 'aud'])->name('evolution.client.config.brl');
 
 Route::middleware('api')->get('/style', [EvoStyle::class, 'style'])->name('evolution.client.style');
 
@@ -56,9 +80,17 @@ Route::middleware('api')->domain((config("evolution.domains.GBP")))->get('/api/p
 Route::middleware('api')->domain((config("evolution.domains.CAD")))->get('/api/player/history/day/{day}', [EvoHistory::class, 'cad'])->name('evolution.client.history.cad');
 Route::middleware('api')->domain((config("evolution.domains.NZD")))->get('/api/player/history/day/{day}', [EvoHistory::class, 'nzd'])->name('evolution.client.history.nzd');
 Route::middleware('api')->domain((config("evolution.domains.AUD")))->get('/api/player/history/day/{day}', [EvoHistory::class, 'aud'])->name('evolution.client.history.aud');
+Route::middleware('api')->domain((config("evolution.domains.BRL")))->get('/api/player/history/day/{day}', [EvoHistory::class, 'brl'])->name('evolution.client.history.brl');
 
 Route::middleware('api')->get('/frontend/loc/strings/{lang}/{file}', function(Request $request, $lang, $file) {
     $url = 'https://'.config("evolution.base_domain").'/frontend/loc/strings/'.$lang.'/'.$file;
+    $file = ProxyHelperFacade::CreateProxy($request)->toUrl($url);
+    return response($file->getContent())
+    ->header('Content-Type', 'application/json');
+});
+
+Route::middleware('api')->get('/frontend/frontendcore/video-fix/{file}', function(Request $request, $file) {
+    $url = 'https://'.config("evolution.base_domain").'/frontend/frontendcore/video-fix/'.$file;
     $file = ProxyHelperFacade::CreateProxy($request)->toUrl($url);
     return response($file->getContent())
     ->header('Content-Type', 'application/json');
@@ -84,6 +116,7 @@ Route::middleware('api')->get('/frontend/evo/r2/js/{file}', function(Request $re
     return response($file->getContent())
     ->header('Content-Type', 'application/javascript');
 });
+
 
 Route::middleware('api')->get('/frontend/cvi/evo-video-components/{file}', function(Request $request, $file) {
     $url = 'https://wac.evo-games.com/frontend/cvi/evo-video-components/'.$file;

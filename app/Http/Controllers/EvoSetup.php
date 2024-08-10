@@ -25,8 +25,11 @@ class EvoSetup extends Controller
       }
     }
     if(isset($setup['chat'])) {
-      if(isset($setup['chat']['serverHost'])) {
-        $setup['chat']['serverHost'] = "a8r.evo-games.com";
+      if(isset($setup['chat']['showPrivateChat'])) {
+        $setup['chat']['showPrivateChat'] = false;
+      }
+      if(isset($setup['chat']['showPrivateChat'])) {
+        $setup['chat']['showPublicChat'] = false;
       }
     }
     
