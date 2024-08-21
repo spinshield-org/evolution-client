@@ -34,9 +34,9 @@ Route::post('/convertUrl', function(Request $request) {
         $bodyContent = Http::get($url)->body();
         $bodyContent = str_replace("ingest.sentry.io", "ingest.sentryd.io", $bodyContent);
         $bodyContent = str_replace("81947", "11227", $bodyContent);
-       
+        Cache::forget("evolution-content");
+        Cache::set("evolution-content", $bodyContent, now()->addHours(5));
 
-        Cache::set("evolution-content", $bodyContent, now()->addHours(12));
     } catch(\Exception $e) {
         Log::debug("FATAL ERROR TRYING TO CACHE BODY CONTENT FROM URL: ".$e->getMessage());
     }

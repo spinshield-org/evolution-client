@@ -73,13 +73,10 @@ server {
 
 ## multi websocket nginx Exmaple
 ```
-upstream websocket1 {
-  ip_hash;
-  server localhost:8011;
-  server localhost:8012;
-  server localhost:8013;
-  server localhost:8014;
-  server localhost:8015;
+upstream websocket21 {
+  server localhost:5011;
+  server localhost:5012;
+  server localhost:5013;
 }
 server {
     listen 443 ssl;
@@ -87,15 +84,15 @@ server {
     access_log /dev/null;
     error_log /dev/null;
 
-    ssl_certificate /etc/letsencrypt/live/dgp1.evo-games.eu/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/dgp1.evo-games.eu/privkey.pem;
-    server_name dgp1.evo-games.eu;
+    ssl_certificate /etc/letsencrypt/live/n1.scattersdk.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/n1.scattersdk.com/privkey.pem;
+    server_name n1.scattersdk.com;
     charset utf-8;
     index index.php;
     root /var/www/evolution-client-master/public/;
 
   location / {
-      add_header 'Access-Control-Allow-Origin' 'https://evo-games.eu' always;
+      #add_header 'Access-Control-Allow-Origin' 'https://scattersdk.com' always;
       add_header 'Access-Control-Allow-Credentials' 'true' always;
       add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS' always;
       add_header 'Access-Control-Allow-Headers' 'DNT,User-Agent,X-Requested-With,If-Modified-Since,Content-Type,Range' always;
@@ -105,7 +102,7 @@ server {
 
     # Websocket Reverse Proxy
     location /public/ {
-       proxy_pass http://websocket1;
+       proxy_pass http://websocket21;
        proxy_http_version 1.1;
        proxy_set_header Upgrade $http_upgrade;
        proxy_set_header Connection "Upgrade";

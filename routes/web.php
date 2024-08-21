@@ -23,11 +23,13 @@ Route::get('/frontend/evo/r2', function (Request $request) {
         $data = [
             "game_html" => $cachedContent,
         ];
-
+        Log::debug("Loaded game view from cache");
         return view('evolution-embedded')->with('data', $data);
+    } else {
+        Log::debug("Did not load game view from cache");
+        return view('evolution');
     }
     
-    return view('evolution');
 });
 Route::get('/frontend/onyx/ls', function (Request $request) {
     $cachedContent = Cache::get("evolution-content");
